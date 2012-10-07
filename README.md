@@ -80,7 +80,7 @@ Display the cache performance stats by:
 Unit Tests
 ----------
 
-Copy the files from `ObjectCacheTests` to you OCUnit test.
+Copy the files from `ObjectCacheTests` to you OCUnit test target.
 
 Feedback
 --------
