@@ -28,7 +28,7 @@ Use the cache like this:
 
 ```objective-c
 
-    //init the cache (singleton**)
+    //init the cache (singleton)
 	DGObjectCache *cache = [DGObjectCache cache];
 	
 	//load a resource
@@ -50,7 +50,7 @@ You can reset the cache at any time:
 ```objective-c
 
 	DGObjectCache *cache = [DGObjectCache cache];
-	[cache reset**];**
+	[cache reset];
 ```
 
 You can remove a specific resource from the:
@@ -58,6 +58,12 @@ You can remove a specific resource from the:
 ```objective-c
 
 	DGObjectCache *cache = [DGObjectCache cache];
-	[cache reset**];**
+	
+	//remove a resource from the cache
+	[cache removeObjectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
+		//resource removed
+	} failure:^(NSError *error) {
+		//an error occured
+	}];
 ```
 
