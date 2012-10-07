@@ -26,18 +26,21 @@ Using the cache
 
 Init the cache by:
 
-```objc
+```objective-c
 
     //init the cache
 	DGObjectCache *cache = [DGObjectCache cache];
 	
 	//load a resource
 	[cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
-	       
+		//Notes:
+		//data = is the contents of your URL resource.
+		//response =  contains the http response from your network request, if the cache had to retrieve the resource from the network.
+		//resource is nil if it was delivered from the cache
+		//source indicates if the resource was delivered from the network or the cache
 	        
 	} failure:^(NSError *error) {
-	        STFail(@"An error should not have occured while attempting to load remote object http://damienglancy.ie/blogimages/weather1.png");
-	        [self notify:SenAsyncTestCaseStatusFailed];
+		//an error occured
 	}];
 	
 ```
