@@ -40,7 +40,6 @@ Use the cache like this:
 		//response =  contains the http response from your network request, if the cache had to retrieve the resource from the network.
 		//resource is nil if it was delivered from the cache
 		//source indicates if the resource was delivered from the network or the cache
-	        
 	} failure:^(NSError *error) {
 		//an error occured
 	}];
@@ -75,6 +74,21 @@ Display the cache performance stats by:
 
 	DGObjectCache *cache = [DGObjectCache cache];
 	[cache printStatistics];
+```
+
+Load a `UIImage` from the cache:
+
+```objective-c
+
+	DGObjectCache *cache = [DGObjectCache cache];
+	
+	//load a resource
+	[cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
+		 UIImage *image = [UIImage imageWithData:object];
+	} failure:^(NSError *error) {
+		//an error occured
+	}];
+	
 ```
 
 Unit Tests
