@@ -8,7 +8,7 @@ It is designed to cache resources for a relatively long time (between applicatio
 Features
 --------
 
-* High-performance core-data backed cache, utilizing the memory efficiencies of using `NSManagedObjects`.
+* High-performance core-data backed cache, utilizing the memory efficiencies of `NSManagedObjects`.
 * Configurable cache-size.
 * Implemented as singleton, so very simple to use throughout your codebase.
 * Asynchronous, block-based API.
@@ -76,6 +76,11 @@ Display the cache performance stats by:
 	DGObjectCache *cache = [DGObjectCache cache];
 	[cache printStatistics];
 ```
+
+Feedback
+--------
+
+Please open an Issue to provide feedback, bugs, enhancements, suggestions, etc.
 
 LICENSE
 -------
