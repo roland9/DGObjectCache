@@ -1,9 +1,9 @@
 DGObjectCache
 =============
 
-An objective-c based URL object cache, backed by Core Data. This is a network aware pass-thru cache, meaning that you make a request for a URL-based resource to the cache. If the cache has the resource it will deliver it from within its cache. If the cache does not have the resource, then it will fetch it for you, insert into the cache and hand the resource over to you. Subsequent requests for that resource will be delivered from the cache. 
+An objective-c based URL object cache, backed by Core Data. This is a network aware pass-thru cache, meaning that you make a request for a URL-based resource to the component. If the cache has the resource it will deliver it from within its store, otherwise if the cache does not have the resource, then it will fetch it for you, insert into its store and return the resource over to you. Subsequent requests for that resource will be delivered from the cache. 
 
-This cache is designed to cache resources for a relatively long time (between application restarts) and is optimized for that use case. It is not as fast as a pure in-memory cache.
+It is designed to cache resources for a relatively long time (between application restarts) and is optimized for that use case. It is not as fast as a pure in-memory implementation.
 
 Features
 --------
@@ -14,6 +14,7 @@ Features
 * Asynchronous, block-based API.
 * Small and simple code-base: Two class files, two matching headers and a Core Data model file.
 * Monitor the cache performance, cache size, hits, misses, etc.
+* Honors `Expiry` HTTP headers.
 
 
 Installation
