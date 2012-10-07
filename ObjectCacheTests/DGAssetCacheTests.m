@@ -302,7 +302,7 @@
         STFail(@"An error should not have occured while attempting to load remote object http://damienglancy.ie/blogimages/weather1.png");
         [self notify:SenAsyncTestCaseStatusFailed];
     }];
-    
+
     [self waitForStatus:SenAsyncTestCaseStatusSucceeded timeout:STANDARD_TIMEOUT_IN_SECS];
 }
 
@@ -336,6 +336,74 @@
     }
 
     [self waitForStatus:SenAsyncTestCaseStatusSucceeded timeout:STANDARD_TIMEOUT_IN_SECS*6];
+}
+
+- (void)testPrintStats
+{
+    DGObjectCache *cache = [DGObjectCache cache];
+
+    NSUInteger TARGET_INSERTS = 10;
+
+    for (NSUInteger i=0; i < TARGET_INSERTS; i++) {
+        NSString *url = [NSString stringWithFormat:@"%@?%@", @"http://damienglancy.ie/blogimages/weather1.png",[NSProcessInfo processInfo].globallyUniqueString];
+
+        [cache objectWithURL:[NSURL URLWithString:url] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
+            STAssertNotNil(object, @"An object should have been returned.");
+            if (!object) {
+                [self notify:SenAsyncTestCaseStatusFailed];
+            } else {
+                if (source != ObjectLoadSourceNetwork) {
+                    STFail(@"Object should have been loaded from network and not cache");
+                    [self notify:SenAsyncTestCaseStatusFailed];
+                }
+
+                if (i == TARGET_INSERTS-1) {
+                    [cache printStatistics];
+                    [self notify:SenAsyncTestCaseStatusSucceeded];
+                }
+            }
+        } failure:^(NSError *error) {
+            STFail(@"An error should not have occured while attempting to load remote object http://damienglancy.ie/blogimages/weather1.png");
+            [self notify:SenAsyncTestCaseStatusFailed];
+        }];
+    }
+
+    [self waitForStatus:SenAsyncTestCaseStatusSucceeded timeout:STANDARD_TIMEOUT_IN_SECS*6];
+}
+
+- (void)testGetImageViaCache
+{
+    DGObjectCache *cache = [DGObjectCache cache];
+
+    [cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
+        STAssertNotNil(object, @"An object should have been returned.");
+        if (!object) {
+            [self notify:SenAsyncTestCaseStatusFailed];
+        } else {
+            if (source != ObjectLoadSourceNetwork) {
+                STFail(@"Object should have been loaded from network and not cache");
+                [self notify:SenAsyncTestCaseStatusFailed];
+            }
+            NSUInteger count = cache.count;
+            if (count != 1) {
+                STFail(@"Cache count should be 1");
+                [self notify:SenAsyncTestCaseStatusFailed];
+            }
+
+            UIImage *image = [UIImage imageWithData:object];
+            if (!image) {
+                STFail(@"Image should have been created");
+                [self notify:SenAsyncTestCaseStatusFailed];
+            }
+
+            [self notify:SenAsyncTestCaseStatusSucceeded];
+        }
+    } failure:^(NSError *error) {
+        STFail(@"An error should not have occured while attempting to load remote object http://damienglancy.ie/blogimages/weather1.png");
+        [self notify:SenAsyncTestCaseStatusFailed];
+    }];
+    
+    [self waitForStatus:SenAsyncTestCaseStatusSucceeded timeout:STANDARD_TIMEOUT_IN_SECS];
 }
 
 @end
