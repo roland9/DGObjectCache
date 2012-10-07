@@ -77,6 +77,11 @@ Display the cache performance stats by:
 	[cache printStatistics];
 ```
 
+Unit Tests
+----------
+
+Copy the files from `ObjectCacheTests` to you OCUnit test.
+
 Feedback
 --------
 
