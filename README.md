@@ -24,11 +24,11 @@ Installation
 Using the cache
 ---------------
 
-Init the cache by:
+Use the cache like this:
 
 ```objective-c
 
-    //init the cache
+    //init the cache (singleton**)
 	DGObjectCache *cache = [DGObjectCache cache];
 	
 	//load a resource
@@ -44,3 +44,20 @@ Init the cache by:
 	}];
 	
 ```
+
+You can reset the cache at any time:
+
+```objective-c
+
+	DGObjectCache *cache = [DGObjectCache cache];
+	[cache reset**];**
+```
+
+You can remove a specific resource from the:
+
+```objective-c
+
+	DGObjectCache *cache = [DGObjectCache cache];
+	[cache reset**];**
+```
+
