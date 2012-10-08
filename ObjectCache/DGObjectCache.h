@@ -27,7 +27,7 @@ typedef void (^ObjectCacheFailureBlock)(NSError *error);
 + (id)cache;
 + (id)cacheWithCapacity:(NSUInteger)capacity;
 
-- (void)reset;
+- (void)resetObjectCache;
 - (NSUInteger)count;
 - (void)printStatistics;
 

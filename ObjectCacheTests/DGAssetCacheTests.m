@@ -15,7 +15,7 @@
 {
     [super setUp];
     // Set-up code here.
-    [[DGObjectCache cache] reset];
+    [[DGObjectCache cache] resetObjectCache];
     [DGObjectCache resetDispatchOnceToken];
 }
 
@@ -84,7 +84,6 @@
 - (void)testObjectCacheLoadsAnValidRemoteObject
 {
     DGObjectCache *cache = [DGObjectCache cache];
-    [cache reset];
 
     [cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
         STAssertNotNil(object, @"An object should have been returned.");
@@ -108,7 +107,6 @@
 - (void)testObjectCacheLoadsAnInvalidRemoteObject
 {
     DGObjectCache *cache = [DGObjectCache cache];
-    [cache reset];
 
     [cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/invalid.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
         STFail(@"An error should have occured while attempting to load remote object http://damienglancy.ie/blogimages/invalid.png");
@@ -127,7 +125,6 @@
 - (void)testObjectCacheResetWorks
 {
     DGObjectCache *cache = [DGObjectCache cache];
-    [cache reset];
 
     if (cache.count !=0) {
         STFail(@"Cache count should be 0");
@@ -149,7 +146,7 @@
                 [self notify:SenAsyncTestCaseStatusFailed];
             }
 
-            [cache reset];
+            [cache resetObjectCache];
 
             if (cache.count !=0) {
                 STFail(@"Cache count should be 0");
@@ -169,7 +166,6 @@
 - (void)testObjectCacheLoadsAnValidRemoteObjectAndPlacesItInCache
 {
     DGObjectCache *cache = [DGObjectCache cache];
-    [cache reset];
 
     [cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
         STAssertNotNil(object, @"An object should have been returned.");
@@ -199,7 +195,6 @@
 - (void)testObjectCacheLoadsAnValidRemoteObjectAndPlacesItInCacheAndThenReturnsItFromCacheOnSubsequentRequests
 {
     __block DGObjectCache *cache = [DGObjectCache cache];
-    [cache reset];
 
     [cache objectWithURL:[NSURL URLWithString:@"http://damienglancy.ie/blogimages/weather1.png"] success:^(NSData *object, NSURLResponse *response, ObjectLoadSource source) {
         STAssertNotNil(object, @"An object should have been returned.");

@@ -51,7 +51,7 @@ You can reset the cache at any time:
 ```objective-c
 
 	DGObjectCache *cache = [DGObjectCache cache];
-	[cache reset];
+	[cache resetObjectCache];
 ```
 
 You can remove a specific resource from the cache:

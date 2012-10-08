@@ -141,7 +141,7 @@ static dispatch_once_t *once_token_debug;
     }
 }
 
-- (void)reset
+- (void)resetObjectCache
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"CachedObject" inManagedObjectContext:_managedObjectContext]];
