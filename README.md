@@ -12,7 +12,7 @@ Features
 * Configurable cache-size.
 * Implemented as singleton, so very simple to use throughout your codebase.
 * Asynchronous, block-based API.
-* Small and simple code-base: Two class files, two matching headers and a Core Data model file.
+* Small and simple code-base: One class file, one matching header and a Core Data model file.
 * Monitor the cache performance, cache size, hits, misses, etc.
 * Honors `Expiry` HTTP headers.
 

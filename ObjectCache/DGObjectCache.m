@@ -7,7 +7,6 @@
 //
 
 #import "DGObjectCache.h"
-#import "CachedObject.h"
 
 #define ERROR_DOMAIN @"ie.damienglancy.errors"
 
@@ -85,11 +84,14 @@ static dispatch_once_t *once_token_debug;
 {
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
 
-    CachedObject *cachedObject = [self objectFromCoreDataWithURL:url];
+    NSManagedObject *cachedObject = [self objectFromCoreDataWithURL:url];
     if (cachedObject) {
         _cacheHits++;
         _totalHits++;
-        success(cachedObject.data, nil, ObjectLoadSourceCache);
+
+        NSData *data = [cachedObject valueForKey:@"data"];
+
+        success(data, nil, ObjectLoadSourceCache);
     } else {
         [NSURLConnection sendAsynchronousRequest:urlRequest queue:NSOperationQueue.mainQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
          {
@@ -125,7 +127,7 @@ static dispatch_once_t *once_token_debug;
 
 - (void)removeObjectWithURL:(NSURL *)url success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure
 {
-    CachedObject *cachedObject = [self objectFromCoreDataWithURL:url];
+    NSManagedObject *cachedObject = [self objectFromCoreDataWithURL:url];
     [_managedObjectContext deleteObject:cachedObject];
 
     NSError *error;
@@ -206,8 +208,8 @@ static dispatch_once_t *once_token_debug;
             NSLog(@"[OBJECT CACHE] Error occured finding oldest object in store. %@", error.localizedDescription);
         } else {
             if (results.count == 1) {
-                CachedObject *cachedObject = (CachedObject *)results[0];
-                NSString *cachedObjectUrl = cachedObject.url;
+                NSManagedObject *cachedObject = (NSManagedObject *)results[0];
+                NSString *cachedObjectUrl = [cachedObject valueForKey:@"url"];
                 [_managedObjectContext deleteObject:cachedObject];
 
                 [_managedObjectContext save:&error];
@@ -220,12 +222,12 @@ static dispatch_once_t *once_token_debug;
         }
     }
 
-    CachedObject *object = (CachedObject *)[NSEntityDescription insertNewObjectForEntityForName:@"CachedObject" inManagedObjectContext:_managedObjectContext];
+    NSManagedObject *object = (NSManagedObject *)[NSEntityDescription insertNewObjectForEntityForName:@"CachedObject" inManagedObjectContext:_managedObjectContext];
 
-    object.url = url.absoluteString;
-    object.data = data;
-    object.cachedDate = [NSDate date];
-    object.expiryDate = expiryDate;
+    [object setValue:url.absoluteString forKey:@"url"];
+    [object setValue:data forKey:@"data"];
+    [object setValue:[NSDate date] forKey:@"cachedDate"];
+    [object setValue:expiryDate forKey:@"expiryDate"];
 
     NSError *error;
     [_managedObjectContext save:&error];
@@ -236,7 +238,7 @@ static dispatch_once_t *once_token_debug;
     }
 }
 
-- (CachedObject *)objectFromCoreDataWithURL:(NSURL *)url
+- (NSManagedObject *)objectFromCoreDataWithURL:(NSURL *)url
 {
     NSFetchRequest *fetchRequest = [_managedObjectModel fetchRequestFromTemplateWithName:@"ObjectForUrl" substitutionVariables:@{@"URL" : url}];
 
@@ -244,10 +246,12 @@ static dispatch_once_t *once_token_debug;
     NSArray* results = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
 
     if (results && results.count == 1) {
-        CachedObject *cachedObject = (CachedObject *)results[0];
+        NSManagedObject *cachedObject = (NSManagedObject *)results[0];
 
-        if (cachedObject.expiryDate) {
-            if ([cachedObject.expiryDate compare:[NSDate date]]==NSOrderedAscending) {
+        NSDate *expiryDate = [cachedObject valueForKey:@"expiryDate"];
+
+        if (expiryDate) {
+            if ([expiryDate compare:[NSDate date]]==NSOrderedAscending) {
                 // cached resource has expired
                 [_managedObjectContext deleteObject:cachedObject];
 
