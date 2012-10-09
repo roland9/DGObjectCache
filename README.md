@@ -76,6 +76,8 @@ Display the cache performance stats by:
 	[cache printStatistics];
 ```
 
+Or you can grab specific stats by reading the `cacheHits`, `cacheMisses` and `totalHits` properties. A cache-miss indicates that the cache had to grab the resource from the network.
+
 Load a `UIImage` from the cache:
 
 ```objective-c
@@ -105,8 +107,6 @@ LICENSE
 -------
 
 DGObjectCache is available under the MIT license.
-
-Or you can grab specific stats by reading the `cacheHits`, `cacheMisses` and `totalHits` properties. A cache-miss indicates that the cache had to grab the resource from the network.
 
 Copyright (c) 2012 Damien Glancy (http://damienglancy.ie)
 
