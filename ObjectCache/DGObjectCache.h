@@ -33,6 +33,7 @@ typedef void (^ObjectCacheFailureBlock)(NSError *error);
 - (void)printStatistics;
 
 - (void)objectWithURL:(NSURL *)url success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
+- (void)objectWithRequest:(NSURLRequest *)urlRequest success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
 - (void)removeObjectWithURL:(NSURL *)url success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
 
 #ifdef DEBUG

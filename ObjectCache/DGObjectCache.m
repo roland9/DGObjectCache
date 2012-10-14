@@ -84,13 +84,19 @@ static dispatch_once_t *once_token_debug;
 {
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
 
-    NSManagedObject *cachedObject = [self objectFromCoreDataWithURL:url];
+    [self objectWithRequest:urlRequest success:success failure:failure];
+}
+
+
+- (void)objectWithRequest:(NSURLRequest *)urlRequest success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure {
+
+    NSManagedObject *cachedObject = [self objectFromCoreDataWithURL:urlRequest.URL];
     if (cachedObject) {
         _cacheHits++;
         _totalHits++;
-
+        
         NSData *data = [cachedObject valueForKey:@"data"];
-
+        
         success(data, nil, ObjectLoadSourceCache);
     } else {
         [NSURLConnection sendAsynchronousRequest:urlRequest queue:NSOperationQueue.mainQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
@@ -98,7 +104,7 @@ static dispatch_once_t *once_token_debug;
              if(error) {
                  failure(error);
              }
-
+             
              NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
              NSString *expiryDateString = [httpResponse.allHeaderFields objectForKey:@"Expires"];
              NSDate *expiryDate;
@@ -108,12 +114,12 @@ static dispatch_once_t *once_token_debug;
                  df.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
                  df.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
                  df.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss 'GMT'";
-
+                 
                  expiryDate = [df dateFromString:expiryDateString];
              }
-
+             
              if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
-                 [self insertObjectIntoCoreDataWithURL:url data:data expiryDate:expiryDate];
+                 [self insertObjectIntoCoreDataWithURL:urlRequest.URL data:data expiryDate:expiryDate];
                  _cacheMisses++;
                  _totalHits++;
                  success(data, response, ObjectLoadSourceNetwork);
@@ -123,7 +129,9 @@ static dispatch_once_t *once_token_debug;
              }
          }];
     }
+
 }
+
 
 - (void)removeObjectWithURL:(NSURL *)url success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure
 {
