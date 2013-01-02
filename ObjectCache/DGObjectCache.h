@@ -16,6 +16,7 @@ typedef enum {
 
 typedef void (^ObjectCacheSuccessBlock)(NSData *object, NSURLResponse *response, ObjectLoadSource source);
 typedef void (^ObjectCacheFailureBlock)(NSError *error);
+typedef NSData *(^ObjectCacheModifyObjectBlock)(NSData *object);
 
 @interface DGObjectCache : NSObject
 
@@ -34,6 +35,7 @@ typedef void (^ObjectCacheFailureBlock)(NSError *error);
 
 - (void)objectWithURL:(NSURL *)url success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
 - (void)objectWithRequest:(NSURLRequest *)urlRequest success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
+- (void)objectWithRequest:(NSURLRequest *)urlRequest modifyObject:(ObjectCacheModifyObjectBlock)modify success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
 - (void)removeObjectWithURL:(NSURL *)url success:(ObjectCacheSuccessBlock)success failure:(ObjectCacheFailureBlock)failure;
 
 #ifdef DEBUG
